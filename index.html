@@ -1,0 +1,113 @@
+<!-- hw -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <title>update_delete_data</title>
+</head>
+
+<body>
+
+    <input type="button" value="新增" onclick="update()">
+    <input type="button" value="刪除" onclick="del()">
+
+
+    <script>
+        var w = 600,
+            h = 270,
+            p = 100;
+        var arr = [85, 60, 99, 49, 77, 59];
+        var body = d3.select("body");
+
+        svg();
+        bind(arr);
+        render();
+
+        function svg() {
+            d3.select("body").append("svg").attr({
+                width: w,
+                height: h,
+            });
+        }
+
+
+        //資料綁定
+        function bind(dataSet) {
+            //data 複數
+            var selection = d3.select("svg").selectAll("rect").data(dataSet);
+            //增加視覺元素
+            selection.enter().append("rect");
+            //移除視覺元素
+            selection.exit().remove();
+
+            var selectionText = d3.select("svg").selectAll("text").data(dataSet);
+            //增加視覺元素
+            selectionText.enter().append("text");
+            //移除視覺元素
+            selectionText.exit().remove();
+        }
+        //呈現
+        function render() {
+            d3.selectAll("text").attr({
+                x: function(d, i) {
+                    return p + 43 * i + 20
+                },
+                y: function(d) {
+                    return h - p + 20
+                },
+                //水平置中
+                "text-anchor": "middle"
+            }).text(function(d) {
+                return d;
+            })
+
+            d3.selectAll("rect")
+                .attr({
+                    x: function(d, i) {
+                        return p + 43 * i
+                    },
+                    y: function(d) {
+                        return h - p - d
+                    },
+                    width: 40,
+                    height: function(d) {
+                        return d;
+                    },
+                    fill: function(d) {
+                        if (d < 70) {
+                            return "red"
+                        } else {
+                            return "lightgreen"
+                        };
+
+                    }
+                })
+        }
+
+        function update() {
+            var num = random(20, 100);
+            arr.push(num)
+            bind(arr);
+            render();
+        }
+
+        function del() {
+            arr.shift();
+            bind(arr);
+            render();
+        }
+
+        function random(N, M) {
+            return Math.floor(Math.random() * (M - N + 1) + N);
+        }
+        //匿名函式 d=data i=index
+        //可以放在select或selectAll下放匿名函式，但要先做bind
+
+    </script>
+
+
+</body>
+
+</html>
